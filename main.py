@@ -42,24 +42,28 @@ def parens_match_iterative(mylist):
     >>>parens_match_iterative(['('])
     False
     """
-    ### TODO
+    set = iterate(parens_update, 1, mylist)
+
+    if set == 1:
+      return True
+    else:
+      return False
+
     pass
 
 
 def parens_update(current_output, next_input):
-    """
-    This function will be passed to the `iterate` function to 
-    solve the balanced parenthesis problem.
+  if next_input == '(':
+    current_output += 1
+
+  elif next_input == ')':
+    current_output -= 1
+    if current_output < 0:
+      return -math.inf
     
-    Like all functions used by iterate, it takes in:
-    current_output....the cumulative output thus far (e.g., the running sum when doing addition)
-    next_input........the next value in the input
-    
-    Returns:
-      the updated value of `current_output`
-    """
-    ###TODO
-    pass
+
+  return current_output
+pass
 
 
 def test_parens_match_iterative():
@@ -88,6 +92,13 @@ def parens_match_scan(mylist):
     
     """
     ###TODO
+    list_map = list(map(paren_map, mylist))
+    scan_map = scan(lambda x,y: x+y, 0, list_map)
+    scan_reduce = reduce(min_f, 0, scan_map[0])
+    if scan_reduce >= 0 and (scan_map[1] == 0):
+      return True
+    else:
+      return False
     pass
 
 def scan(f, id_, a):
@@ -161,7 +172,25 @@ def parens_match_dc_helper(mylist):
       parens_match_dc to return the final True or False value
     """
     ###TODO
-    pass
+    if len(mylist) == 0:
+      return (0,0)
+    elif len(mylist) == 1:
+      if mylist[0] == '(':
+          return (0,1)
+      elif mylist[0] == ')':
+          return (1,0)
+      else:
+          return (0,0)
+    
+    a,b = mylist[0:len(mylist)//2], mylist[len(mylist)//2:]
+
+    (rA, lA) = parens_match_dc_helper(a)
+    (rB, lB) = parens_match_dc_helper(b)
+
+    if rB >= lA:
+      return (rA+rB-lA, lB)
+    elif lA > rB:
+      return (rA,lA+lB-rB)
     
 
 def test_parens_match_dc():
